@@ -153,11 +153,14 @@
      *      'sourceId' => <Unique and human-friendly ID of source, e.g. domain name>,
      *      'antibanSearch' => <Search regexp>,
      *      'antibanReplace' => <Replacement regexp>
+     *      'linkFilter' => <Matching regex for entry's link>
      * )
      * 
      * 'antiban*' fields define rules of transformating the direct link
      * into the web-proxied one to break through censorship.
      * 
+     * 'linkFilter' is used to filter feeds which are not filtered on served side.
+     *
      * ====================================
      * 
      * Returns chronologically-sorted array of data ready for posting
@@ -181,6 +184,7 @@
             $sourceId = $data[$x]['sourceId'];
             $antibanSearch = $data[$x]['antibanSearch'];
             $antibanReplace = $data[$x]['antibanReplace'];
+            $linkFilter = $data[$x]['linkFilter'];
                 
             for ($i = count($entries) - 1; $i > -1 ; $i--) {
                 $entry = $entries[$i];
@@ -191,6 +195,10 @@
                     continue;
                 }
                 
+                if (!preg_match($linkFilter, $entry->link)) {
+                    continue;
+                }
+
                 setLatestProcessedTimestamp($sourceId, $currentTimestamp);
                 
                 $readyText = $entry->description;
@@ -282,16 +290,18 @@
     // via cameleo.ru web proxy
     $data = array(
         array(
-            'rssUrl' => 'https://meduza.io/rss/news',
+            'rssUrl' => 'https://meduza.io/rss/all',
             'sourceId' => 'meduza.io',
             'antibanSearch' => '|^https?://meduza.io|i',
-            'antibanReplace' => 'http://0s.nvswi5l2mexgs3y.cmle.ru'
+            'antibanReplace' => 'http://0s.nvswi5l2mexgs3y.cmle.ru',
+            'linkFilter' => '|^https?://meduza\.io/news/.*|i',
         ),
         array(
             'rssUrl' => 'http://grani.ru/export/articles-rss2.xml',
             'sourceId' => 'grani.ru',
             'antibanSearch' => '|^https?://grani.ru|i',
             'antibanReplace' => 'http://m5zgc3tjfzzhk.cmle.ru',
+            'linkFilter' => '|.*|',
         ),
     );
         
