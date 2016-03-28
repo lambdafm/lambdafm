@@ -297,7 +297,7 @@
             'linkFilter' => '|^https?://meduza\.io/news/.*|i',
         ),
         array(
-            'rssUrl' => 'http://grani.ru/export/articles-rss2.xml',
+            'rssUrl' => 'http://grani.ru/export/news-rss2.xml',
             'sourceId' => 'grani.ru',
             'antibanSearch' => '|^https?://grani.ru|i',
             'antibanReplace' => 'http://m5zgc3tjfzzhk.cmle.ru',
